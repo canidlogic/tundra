@@ -230,11 +230,12 @@ another dot.
 The map file has one line per entry in the video map, and it must have
 at least one content line.  Blank lines at the end are ignored.  The
 lines declare the contents of the edited video in the order they appear.
-There are five fields, separated by spaces.  The first field is the name
+There are six fields, separated by spaces.  The first field is the name
 of the original video asset.  The second field is the starting frame
 within the original video asset.  The third field is the number of
 frames.  The fourth and fifth fields are the number of frames for a
-fade-in and a fade-out, respectively.  All field values after the first
+fade-in and a fade-out, respectively.  The sixth field is a starting
+frame offset within the edited movie.  All field values after the first
 are unsigned decimal integers.
 
 The map file format matches the maps produced by C<Tundra::Film>.
@@ -302,7 +303,7 @@ sub tundra_sync_load {
     
     # Parse into fields
     my @fields = split " ", $c;
-    ($#fields == 4) or
+    ($#fields == 5) or
       die "Wrong number of map record fields, stopped";
     
     # Check fields
