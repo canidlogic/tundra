@@ -555,13 +555,17 @@ The final video file will be deleted if it already exists at the start
 of the call, as will the map file.
 
 The map file is a text file containing one line for each clip in the
-assembled movie.  The line contains five fields, separated by spaces.
+assembled movie.  The line contains six fields, separated by spaces.
 The first field is the name of the asset that the clip was taken from.
 The second field is the starting frame offset within the source asset.
 The third field is the number of frames in the clip.  The fourth and
 fifth fields are the number of frames for a fade-in and a fade-out that
-were applied, respectively.  All fields after the first one are unsigned
-decimal integers.
+were applied, respectively.  The sixth field is the starting frame
+offset within the edited file.  All fields after the first one are
+unsigned decimal integers.
+
+The starting frame offset field can be derived automatically, but it is
+included in case the user is reading the map file manually.
 
 The map file is intended to make it possible to synchronize audio from
 the original clips with the generated full movie.
@@ -664,13 +668,16 @@ sub tundra_film_build {
     die "Failed to tie map file '$final_map', stopped";
   
   $#mfile = -1;
+  my $movie_offs = 0;
   for my $c (@movie) {
     my $mline = $c->[1] .
                   ' ' . $c->[2] .
                   ' ' . $c->[3] .
                   ' ' . $c->[4] .
-                  ' ' . $c->[5];
+                  ' ' . $c->[5] .
+                  ' ' . $movie_offs;
     push @mfile, ($mline);
+    $movie_offs = $movie_offs + $c->[3];
   }
   
   untie @mfile;
